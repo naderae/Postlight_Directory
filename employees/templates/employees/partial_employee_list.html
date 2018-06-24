@@ -1,0 +1,28 @@
+
+{% for worker in workers %}
+  <tr class='workerRow'>
+    <td>{{ worker.id }}</td>
+    <td>{{ worker.name }}</td>
+    <td>{{ worker.job_title }}</td>
+    <td>{{ worker.years_experience }}</td>
+    <td>{{ worker.department }}</td>
+    <td>
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-employee"
+              data-url="{% url 'employee_update' worker.id %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+    </td>
+    <td>
+      <button type="button"
+              class="btn btn-danger btn-sm js-delete-employee"
+              data-url="{% url 'employee_delete' worker.id %}">
+        <span class="glyphicon glyphicon-trash"></span> Delete
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="7" class="text-center bg-warning">No Employees</td>
+  </tr>
+{% endfor %}

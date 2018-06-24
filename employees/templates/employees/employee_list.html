@@ -1,0 +1,90 @@
+
+ {# this is the main page that everything will be loaded into #}
+
+{% extends 'employees/base.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'employees/js/employees.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+  <h1 class="page-header">Employees</h1>
+
+  {# button to trigger the action #}
+  <p>
+    <button type="button"
+            class="btn btn-primary js-create-employee"
+            data-url="{% url 'employee_create' %}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New Employee
+    </button>
+  </p>
+
+  {# search for employees #}
+  <form action="" method="GET">
+    {# name attribute allows search term to be displayed in url #}
+    {#  value is used to suggest previously searched items #}
+    <input type="text" name='query' placeholder="Search Employees" value="{{request.GET.query}}" />
+    <input type="submit" value="Search" />
+  </form>
+
+
+  <table class="table display table-striped table-bordered" id="employee-table" cellspacing="0">
+      {# table header #}
+    <thead>
+      <tr>
+        <th >ID</th>
+        <th >Name</th>
+        <th >Job Title</th>
+        <th >Years Experience</th>
+        <th >department</th>
+
+      </tr>
+    </thead>
+
+    <tbody id="table-body">
+      {# we use a partial here because the list of employees is going to be used again in the employee_create function #}
+      {% include 'employees/partial_employee_list.html' %}
+    </tbody>
+  </table>
+
+  {# if there is more than one page, we will create pagination #}
+  {% if workers.has_other_pages %}
+  <ul class="pagination">
+    {# if you can move back to a previous page #}
+    {% if workers.has_previous %}
+      {# so that the search still works when flipping through pages, we must keep the query in the url when flipping backwards #}
+      <li><a href="?page={{ workers.previous_page_number }}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in workers.paginator.page_range %}
+      {% if workers.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if workers.has_next %}
+      {# must do the same when flipping pages forwards: we must make sure that when we move forward a page, we still display the results the user searched for #}
+      <li><a href="?page={{ workers.next_page_number }}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
+  {# this is the modal that we will hold the form #}
+  {# it is a bootsrap modal #}
+  <div class="modal fade" id="modal-employee">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

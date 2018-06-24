@@ -1,0 +1,17 @@
+{# widget_tweaks is a django plugin that allows for neat display of form fields #}
+{# this will be loaded into the partial_employee_create template #}
+{% load widget_tweaks %}
+
+
+    {% for field in form %}
+        {# if there is an error, change class to has_error  #}
+      <div class="form-group{% if field.errors %} has-error{% endif %}">
+        {# we wanto to display the label #}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% render_field field class="form-control" %}
+        {# grab all the errors and display them #}
+        {% for error in field.errors %}
+          <p class="help-block">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
